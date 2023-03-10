@@ -9,13 +9,21 @@ class CarGenerator(ABC):
     def generate_car(self, source_file, output_file):
         pass
 
+    @abstractmethod
+    def get_root_cid(self, car_file):
+        pass
+
 
 class IpfsCar(CarGenerator):
     def __init__(self, generator='ipfs-car'):
         self.generator = generator
 
     def generate_car(self, source_file, output_file):
-        check_call([self.generator, '--wrapWithDirectory', 'false', '--pack', dirname(source_file), '--output', output_file])
+        check_call(
+            [self.generator, '--wrapWithDirectory', 'false', '--pack', dirname(source_file), '--output', output_file])
+
+    def get_root_cid(self, car_file):
+        return check_output([self.generator, '--list-roots', car_file]).decode()
 
 
 class IpldGoCar(CarGenerator):
@@ -27,4 +35,3 @@ class IpldGoCar(CarGenerator):
 
     def get_root_cid(self, car_file):
         return check_output([self.generator, 'root', car_file]).decode()
-
