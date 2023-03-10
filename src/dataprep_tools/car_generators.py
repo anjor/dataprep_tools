@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from os.path import dirname
-from subprocess import check_call
+from subprocess import check_call, check_output
 
 
 class CarGenerator(ABC):
@@ -24,3 +24,7 @@ class IpldGoCar(CarGenerator):
 
     def generate_car(self, source_file, output_file):
         check_call([self.generator, 'create', '--version', '1', '-f', output_file, source_file])
+
+    def get_root_cid(self, car_file):
+        return check_output([self.generator, 'root', car_file]).decode()
+
